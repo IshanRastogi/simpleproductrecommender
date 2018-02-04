@@ -15,7 +15,8 @@ public class Customer {
     private long id;
     private boolean recommendationActive;
 
-    protected Customer() {}
+    protected Customer() {
+    }
 
     public Customer(long id, boolean recommendationActive) {
         this.id = id;

@@ -49,7 +49,7 @@ public class RecommendationControllerTest {
 
     @Before
     public void setUp() {
-        mockMVC  = standaloneSetup(recommendationController).build();
+        mockMVC = standaloneSetup(recommendationController).build();
     }
 
     @After
@@ -75,10 +75,10 @@ public class RecommendationControllerTest {
 
     @Test
     public void recommendationFound() throws Exception {
-        Customer customer   = new Customer(222222, true);
+        Customer customer = new Customer(222222, true);
         when(customerRepository.findCustomerById(222222)).thenReturn(customer);
 
-        Recommendation recommendation = new Recommendation(222222,1,1);
+        Recommendation recommendation = new Recommendation(222222, 1, 1);
         List<Recommendation> recommendations = new ArrayList<Recommendation>(1);
         recommendations.add(recommendation);
 
@@ -95,7 +95,7 @@ public class RecommendationControllerTest {
     @Test
     public void recommendationUploadWrongHeader() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file",
-                new FileInputStream(new File("test1.csv"))) ;
+                new FileInputStream(new File("test1.csv")));
 
         mockMVC.perform(fileUpload("/recommendations/update").file(multipartFile))
                 .andExpect(status().is4xxClientError());
@@ -104,7 +104,7 @@ public class RecommendationControllerTest {
     @Test
     public void recommendationUploadWrongFields() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file",
-                new FileInputStream(new File("test2.csv"))) ;
+                new FileInputStream(new File("test2.csv")));
 
         mockMVC.perform(fileUpload("/recommendations/update").file(multipartFile))
                 .andExpect(status().is4xxClientError());

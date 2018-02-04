@@ -28,12 +28,12 @@ public class RecommendationController {
 
     /**
      * Default Route
+     *
      * @return HTTP Status 200
      */
     @GetMapping("/")
-    public ResponseEntity defaultRoute()
-    {
-        return new ResponseEntity("OK",HttpStatus.OK);
+    public ResponseEntity defaultRoute() {
+        return new ResponseEntity("OK", HttpStatus.OK);
     }
 
     /**
@@ -41,27 +41,27 @@ public class RecommendationController {
      * /customers/{customerId}/games/recommendations
      * and
      * /recommendations/games/customers/{customerId}
+     *
      * @param count
      * @param id
      * @return json
      */
-    @GetMapping(value = {"/customers/{id:[\\d]+}/games/recommendations","/recommendations/games/customers/{id:[\\d]+}" })
-    public ResponseEntity recommendation(@RequestParam(value = "count", defaultValue = "5") int count, @PathVariable("id") long id)
-    {
+    @GetMapping(value = {"/customers/{id:[\\d]+}/games/recommendations", "/recommendations/games/customers/{id:[\\d]+}"})
+    public ResponseEntity recommendation(@RequestParam(value = "count", defaultValue = "5") int count, @PathVariable("id") long id) {
 
         Customer customer = customerRepository.findCustomerById(id);
 
-        if(null == customer){
+        if (null == customer) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        if(!customer.isRecommendationActive()){
+        if (!customer.isRecommendationActive()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
         List<Recommendation> recommendations = recommendationRepository.findByCustomerIdOrderByRank(customer.getId());
 
         count = Math.min(
-                Math.min(count , RecommendationController.MAX_RECOMMENDATIONS_POSSIBLE),
+                Math.min(count, RecommendationController.MAX_RECOMMENDATIONS_POSSIBLE),
                 recommendations.size()
         );
 
@@ -77,6 +77,7 @@ public class RecommendationController {
 
     /**
      * Post Endpoint to upload CSV file
+     *
      * @param file
      * @return json
      * @throws java.io.IOException
@@ -84,9 +85,8 @@ public class RecommendationController {
      */
     @PostMapping(value = "/recommendations/update")
     @ResponseBody
-    public ResponseEntity recommendationUpload(@RequestParam("file") MultipartFile file) throws java.io.IOException, InvalidCSVException
-    {
-        if(file.isEmpty()){
+    public ResponseEntity recommendationUpload(@RequestParam("file") MultipartFile file) throws java.io.IOException, InvalidCSVException {
+        if (file.isEmpty()) {
             return new ResponseEntity("No file uploaded", HttpStatus.OK);
         }
 
@@ -104,6 +104,8 @@ public class RecommendationController {
         for (CustomerRecommendationSet recommendationSet : customerRecommendationSet) {
 
             customerRepository.save(new Customer(recommendationSet.getCustomerId(), recommendationSet.isRecommendationsEnabled()));
+            recommendationRepository.deleteRecommendationByCustomerId(recommendationSet.getCustomerId());
+
             int ranking = 0;
 
             String[] games = recommendationSet.getRecommendations();
@@ -111,7 +113,7 @@ public class RecommendationController {
 
                 int gameId = 0;
                 Game gameEntity = gameRepository.findByName(game);
-                if(null == gameEntity){
+                if (null == gameEntity) {
                     gameEntity = gameRepository.save(new Game(game));
                 }
 
@@ -128,12 +130,11 @@ public class RecommendationController {
             }
         }
 
-        return new ResponseEntity("File Uploaded",HttpStatus.OK);
+        return new ResponseEntity("File Uploaded", HttpStatus.OK);
     }
 
     @ExceptionHandler(InvalidCSVException.class)
-    protected ResponseEntity handleCSVError(InvalidCSVException ex)
-    {
+    protected ResponseEntity handleCSVError(InvalidCSVException ex) {
         return new ResponseEntity(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 

@@ -7,7 +7,7 @@ import java.util.List;
 public class CustomerRecommendationSets {
 
 
-    public static final String CSV_RECOMMENDATION_IMPORT_FILE_HEADER = "\"CUSTOMER_NUMBER\",\"RECOMMENDATION_ACTIVE\",\"REC1\",\"REC2\",\"REC3\",REC4\",\"REC5\",\"REC6\",\"REC7\",\"REC8\",\"REC9\",\"REC10\"" ;
+    public static final String CSV_RECOMMENDATION_IMPORT_FILE_HEADER = "\"CUSTOMER_NUMBER\",\"RECOMMENDATION_ACTIVE\",\"REC1\",\"REC2\",\"REC3\",REC4\",\"REC5\",\"REC6\",\"REC7\",\"REC8\",\"REC9\",\"REC10\"";
     public static final int CSV_RECOMMENDATION_IMPORT_COLUMN_COUNT = 12;
 
 
@@ -44,17 +44,19 @@ public class CustomerRecommendationSets {
             try {
                 customerId = Long.parseLong(fields[0]);
             } catch (NumberFormatException e) {
-
+                throw new InvalidCSVException(
+                        "Unsupported CustomerId type found in CSV.\n"
+                );
             }
             recommendationsEnabled = Boolean.parseBoolean(fields[1]);
             for (int j = 0; j < CSV_RECOMMENDATION_IMPORT_COLUMN_COUNT - 2; j++) {
-                games[j] = fields[j+2];
+                games[j] = fields[j + 2];
             }
 
             customerRecommendationSets.add(new CustomerRecommendationSet(
-               customerId,
-               recommendationsEnabled,
-               games
+                    customerId,
+                    recommendationsEnabled,
+                    games
             ));
 
         }
@@ -64,15 +66,16 @@ public class CustomerRecommendationSets {
     /**
      * Method to validate number of Columns in the uploaded CSV file
      * As per the current format each row should have 12 columns
+     *
      * @param fields
      * @throws InvalidCSVException
      */
     private static void validateColumnCount(String[] fields) throws InvalidCSVException {
-        if(fields.length != CustomerRecommendationSets.CSV_RECOMMENDATION_IMPORT_COLUMN_COUNT){
+        if (fields.length != CustomerRecommendationSets.CSV_RECOMMENDATION_IMPORT_COLUMN_COUNT) {
             throw new InvalidCSVException(
                     "Unexpected Number of Columns found in CSV.\n"
-                    + "Expected: " + CustomerRecommendationSets.CSV_RECOMMENDATION_IMPORT_COLUMN_COUNT + "\n"
-                    + "Found: " + fields.length
+                            + "Expected: " + CustomerRecommendationSets.CSV_RECOMMENDATION_IMPORT_COLUMN_COUNT + "\n"
+                            + "Found: " + fields.length
             );
         }
     }
@@ -84,12 +87,12 @@ public class CustomerRecommendationSets {
      * @param fileHeader
      * @throws InvalidCSVException
      */
-    private static void validateFileHeader(String fileHeader) throws InvalidCSVException{
-        if(!fileHeader.equals(CustomerRecommendationSets.CSV_RECOMMENDATION_IMPORT_FILE_HEADER)){
+    private static void validateFileHeader(String fileHeader) throws InvalidCSVException {
+        if (!fileHeader.equals(CustomerRecommendationSets.CSV_RECOMMENDATION_IMPORT_FILE_HEADER)) {
             throw new InvalidCSVException(
                     "Unsupported CSV-Header.\n"
-                    + "Expected: " + CustomerRecommendationSets.CSV_RECOMMENDATION_IMPORT_FILE_HEADER + "\n"
-                    + "Found: " + fileHeader
+                            + "Expected: " + CustomerRecommendationSets.CSV_RECOMMENDATION_IMPORT_FILE_HEADER + "\n"
+                            + "Found: " + fileHeader
             );
         }
     }
