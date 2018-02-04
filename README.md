@@ -38,7 +38,7 @@ The API provides 4 routes.
 a CSV file containing priorities and recommendations for all 
 users and returns:
     - 200 if upload is successful
-    - 420 if the CSV file doesn't match the defined format
+    - 422 if the CSV file doesn't match the defined format
 
 _Build_: To build the application, simply run
 1. Clone this repo using:
