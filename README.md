@@ -40,8 +40,12 @@ users and returns:
     3. 420 if the CSV file doesn't match the defined format
 
 _Build_: To build the application, simply run
-1. `mvn clean` to ensure that the working directory is clean
-2. `mvn install` this command will download all the libraries
+1. Clone this repo using:
+`git@github.com:IshanRastogi/simpleproductrecommender.git`
+or download the zip:
+`https://github.com/IshanRastogi/simpleproductrecommender/archive/master.zip`
+2. `mvn clean` to ensure that the working directory is clean
+3. `mvn install` this command will download all the libraries
 which are required by the API to function, build an executable
 jar and build and tag a docker image, ready to be run.
 
